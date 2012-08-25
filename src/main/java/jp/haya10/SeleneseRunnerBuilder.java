@@ -42,6 +42,10 @@ public class SeleneseRunnerBuilder extends Builder {
         this.seleneseFile = seleneseFile;
     }
 
+    public String getSeleneseFile() {
+        return seleneseFile;
+    }
+
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
         // This is where you 'build' the project.
