@@ -12,4 +12,7 @@
   <f:entry title="Name" field="name">
     <f:textbox />
   </f:entry>
+  <f:entry title="selenese script">
+    <f:textbox field="seleneseFile" clazz="required"/>
+  </f:entry>
 </j:jelly>

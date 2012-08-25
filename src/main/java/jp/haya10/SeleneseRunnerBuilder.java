@@ -34,19 +34,12 @@ import java.io.IOException;
  */
 public class SeleneseRunnerBuilder extends Builder {
 
-    private final String name;
+    private final String seleneseFile;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public SeleneseRunnerBuilder(String name) {
-        this.name = name;
-    }
-
-    /**
-     * We'll use this from the <tt>config.jelly</tt>.
-     */
-    public String getName() {
-        return name;
+    public SeleneseRunnerBuilder(String seleneseFile) {
+        this.seleneseFile = seleneseFile;
     }
 
     @Override
@@ -54,11 +47,9 @@ public class SeleneseRunnerBuilder extends Builder {
         // This is where you 'build' the project.
         // Since this is a dummy, we just say 'hello world' and call that a build.
 
-        // This also shows how you can consult the global configuration of the builder
-        if (getDescriptor().getUseFrench())
-            listener.getLogger().println("Bonjour, "+name+"!");
-        else
-            listener.getLogger().println("Hello, "+name+"!");
+        // TODO implements perform
+
+        listener.getLogger().println("selenese finished.");
         return true;
     }
 
@@ -115,7 +106,7 @@ public class SeleneseRunnerBuilder extends Builder {
          * This human readable name is used in the configuration screen.
          */
         public String getDisplayName() {
-            return "Say hello world";
+            return "Run selenese script";
         }
 
         @Override
