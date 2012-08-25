@@ -1,22 +1,26 @@
 package jp.haya10;
 
-import hudson.Launcher;
 import hudson.Extension;
-import hudson.util.FormValidation;
-import hudson.model.AbstractBuild;
+import hudson.Launcher;
 import hudson.model.BuildListener;
+import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.tasks.Builder;
 import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.Builder;
+import hudson.util.FormValidation;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+
+import jp.vmi.selenium.selenese.Runner;
+import jp.vmi.selenium.selenese.result.Result;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.QueryParameter;
-
-import javax.servlet.ServletException;
-import java.io.IOException;
+import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * Sample {@link Builder}.
@@ -51,13 +55,16 @@ public class SeleneseRunnerBuilder extends Builder {
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        // This is where you 'build' the project.
-        // Since this is a dummy, we just say 'hello world' and call that a build.
+        listener.getLogger().println("selenese start.");
 
-        // TODO implements perform
+        Runner runner = new Runner();
+        Result result = runner.run(getSeleneseFile());
 
+        for (String log : result.getNormalLogs()) {
+            listener.getLogger().println(log);
+        }
         listener.getLogger().println("selenese finished.");
-        return true;
+        return result.isSuccess();
     }
 
     // Overridden for better type safety.
