@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 
 import jp.vmi.selenium.selenese.Runner;
 import jp.vmi.selenium.selenese.result.Result;
+import jp.vmi.selenium.webdriver.WebDriverManager;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
@@ -57,7 +58,10 @@ public class SeleneseRunnerBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
         listener.getLogger().println("selenese start.");
 
+        WebDriverManager manager = WebDriverManager.getInstance();
+        manager.setWebDriverFactory(WebDriverManager.HTMLUNIT);
         Runner runner = new Runner();
+        runner.setDriver(manager.get());
         Result result = runner.run(getSeleneseFile());
 
         for (String log : result.getNormalLogs()) {
