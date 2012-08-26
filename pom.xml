@@ -32,6 +32,20 @@
   		<version>1.0.0-SNAPSHOT</version>
   		<type>jar</type>
   		<scope>compile</scope>
+		<exclusions>
+			<exclusion>
+				<artifactId>logback-classic</artifactId>
+				<groupId>ch.qos.logback</groupId>
+			</exclusion>
+			<exclusion>
+				<artifactId>slf4j-api</artifactId>
+				<groupId>org.slf4j</groupId>
+			</exclusion>
+			<exclusion>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<groupId>org.slf4j</groupId>
+			</exclusion>
+		</exclusions>
   	</dependency>
   </dependencies>
 </project>
