@@ -64,9 +64,6 @@ public class SeleneseRunnerBuilder extends Builder {
         runner.setDriver(manager.get());
         Result result = runner.run(getSeleneseFile());
 
-        for (String log : result.getNormalLogs()) {
-            listener.getLogger().println(log);
-        }
         listener.getLogger().println("selenese finished.");
         return result.isSuccess();
     }
