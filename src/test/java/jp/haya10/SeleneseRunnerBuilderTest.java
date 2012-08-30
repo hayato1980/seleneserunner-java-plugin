@@ -2,6 +2,7 @@ package jp.haya10;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.FreeStyleProject;
 
@@ -18,7 +19,7 @@ public class SeleneseRunnerBuilderTest extends HudsonTestCase {
         FreeStyleProject p = createFreeStyleProject();
         String file = TestUtils.getScriptFile(this.getClass(), "Simple");
         p.getBuildersList().add(
-            new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX));
+            new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true));
 
         assertThat(new File(file).exists(), is(true));
         try {
@@ -28,5 +29,8 @@ public class SeleneseRunnerBuilderTest extends HudsonTestCase {
                 System.out.println(log);
             }
         }
+
+        FilePath screenshot = p.getSomeWorkspace().child("screenshots");
+        assertThat(screenshot.list().isEmpty(), is(false));
     }
 }

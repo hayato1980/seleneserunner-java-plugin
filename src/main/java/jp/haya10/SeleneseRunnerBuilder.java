@@ -50,11 +50,14 @@ public class SeleneseRunnerBuilder extends Builder {
 
     private final String browser;
 
+    private final boolean screenshotAll;
+
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public SeleneseRunnerBuilder(String seleneseFile, String browser) {
+    public SeleneseRunnerBuilder(String seleneseFile, String browser, boolean screenshotAll) {
         this.seleneseFile = seleneseFile;
         this.browser = browser;
+        this.screenshotAll = screenshotAll;
     }
 
     public String getSeleneseFile() {
@@ -74,6 +77,14 @@ public class SeleneseRunnerBuilder extends Builder {
             manager.setWebDriverFactory(browser);
             Runner runner = new Runner();
             runner.setDriver(manager.get());
+
+            FilePath screenshotDir = build.getWorkspace().child("screenshots");
+            screenshotDir.mkdirs();
+            runner.setScreenshotDir(screenshotDir.getRemote());
+            if (screenshotAll) {
+                runner.setScreenshotAllDir(screenshotDir.getRemote());
+            }
+
             FilePath junitdir = build.getWorkspace().child("junitresult");
             junitdir.mkdirs();
 

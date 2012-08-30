@@ -15,4 +15,7 @@
   <f:entry title="browser setting">
     <f:textbox field="browser" clazz="required"/>
   </f:entry>
+  <f:entry title="Get screenshot per command">
+    <f:checkbox field="screenshotAll"/>
+  </f:entry>
 </j:jelly>
