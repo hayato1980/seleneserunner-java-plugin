@@ -59,13 +59,19 @@ public class SeleneseRunnerBuilder extends Builder {
         listener.getLogger().println("selenese start.");
 
         WebDriverManager manager = WebDriverManager.getInstance();
-        manager.setWebDriverFactory(WebDriverManager.HTMLUNIT);
-        Runner runner = new Runner();
-        runner.setDriver(manager.get());
-        Result result = runner.run(getSeleneseFile());
-
-        listener.getLogger().println("selenese finished.");
-        return result.isSuccess();
+        try {
+            manager.setWebDriverFactory(WebDriverManager.FIREFOX);
+            Runner runner = new Runner();
+            runner.setDriver(manager.get());
+            Result result = runner.run(getSeleneseFile());
+            return result.isSuccess();
+        } catch (Throwable t) {
+            t.printStackTrace(listener.getLogger());
+            return false;
+        } finally {
+            listener.getLogger().println("selenese finished.");
+            manager.quitAllDrivers();
+        }
     }
 
     // Overridden for better type safety.
