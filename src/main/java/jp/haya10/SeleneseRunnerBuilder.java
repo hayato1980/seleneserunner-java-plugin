@@ -1,6 +1,7 @@
 package jp.haya10;
 
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
@@ -10,10 +11,12 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 
+import jp.vmi.junit.result.JUnitResult;
 import jp.vmi.selenium.selenese.Runner;
 import jp.vmi.selenium.selenese.result.Result;
 import jp.vmi.selenium.webdriver.WebDriverManager;
@@ -71,6 +74,13 @@ public class SeleneseRunnerBuilder extends Builder {
             manager.setWebDriverFactory(browser);
             Runner runner = new Runner();
             runner.setDriver(manager.get());
+            FilePath junitdir = build.getWorkspace().child("junitresult");
+            junitdir.mkdirs();
+
+            listener.getLogger().println("output junitresult xml to :" + junitdir.getRemote());
+            listener.getLogger().println("selenese file : " + getSeleneseFile());
+
+            JUnitResult.setResultDir(junitdir.getRemote());
             Result result = runner.run(getSeleneseFile());
             result.getMessage();
             return result.isSuccess();
