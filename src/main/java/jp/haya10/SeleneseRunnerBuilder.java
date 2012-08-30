@@ -44,14 +44,21 @@ public class SeleneseRunnerBuilder extends Builder {
 
     private final String seleneseFile;
 
+    private final String browser;
+
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public SeleneseRunnerBuilder(String seleneseFile) {
+    public SeleneseRunnerBuilder(String seleneseFile, String browser) {
         this.seleneseFile = seleneseFile;
+        this.browser = browser;
     }
 
     public String getSeleneseFile() {
         return seleneseFile;
+    }
+
+    public String getBrowser() {
+        return browser;
     }
 
     @Override
@@ -60,10 +67,11 @@ public class SeleneseRunnerBuilder extends Builder {
 
         WebDriverManager manager = WebDriverManager.getInstance();
         try {
-            manager.setWebDriverFactory(WebDriverManager.FIREFOX);
+            manager.setWebDriverFactory(browser);
             Runner runner = new Runner();
             runner.setDriver(manager.get());
             Result result = runner.run(getSeleneseFile());
+            result.getMessage();
             return result.isSuccess();
         } catch (Throwable t) {
             t.printStackTrace(listener.getLogger());

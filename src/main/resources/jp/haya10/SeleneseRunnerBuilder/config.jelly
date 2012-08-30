@@ -12,4 +12,7 @@
   <f:entry title="selenese script">
     <f:textbox field="seleneseFile" clazz="required"/>
   </f:entry>
+  <f:entry title="browser setting">
+    <f:textbox field="browser" clazz="required"/>
+  </f:entry>
 </j:jelly>
