@@ -12,8 +12,12 @@
   <f:entry title="selenese script">
     <f:textbox field="seleneseFile" clazz="required"/>
   </f:entry>
-  <f:entry title="browser setting">
-    <f:textbox field="browser" clazz="required"/>
+  <f:entry name="browser" title="browser setting" field="browser">
+    <select name="browser">
+      <option value="firefox">Firefox</option>
+      <option value="chrome">Google Chrome</option>
+      <option value="ie">Internet Exproler</option>
+    </select>
   </f:entry>
   <f:entry title="Get screenshot per command">
     <f:checkbox field="screenshotAll"/>
