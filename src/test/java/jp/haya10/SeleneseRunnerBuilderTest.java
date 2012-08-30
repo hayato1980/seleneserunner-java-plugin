@@ -19,7 +19,7 @@ public class SeleneseRunnerBuilderTest extends HudsonTestCase {
         FreeStyleProject p = createFreeStyleProject();
         String file = TestUtils.getScriptFile(this.getClass(), "Simple");
         p.getBuildersList().add(
-            new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true));
+            new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true, ""));
 
         assertThat(new File(file).exists(), is(true));
         try {

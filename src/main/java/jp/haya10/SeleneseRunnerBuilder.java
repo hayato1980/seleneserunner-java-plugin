@@ -52,12 +52,15 @@ public class SeleneseRunnerBuilder extends Builder {
 
     private final boolean screenshotAll;
 
+    private final String baseUrl;
+
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public SeleneseRunnerBuilder(String seleneseFile, String browser, boolean screenshotAll) {
+    public SeleneseRunnerBuilder(String seleneseFile, String browser, boolean screenshotAll, String baseUrl) {
         this.seleneseFile = seleneseFile;
         this.browser = browser;
         this.screenshotAll = screenshotAll;
+        this.baseUrl = baseUrl;
     }
 
     public String getSeleneseFile() {
@@ -78,6 +81,11 @@ public class SeleneseRunnerBuilder extends Builder {
             Runner runner = new Runner();
             runner.setDriver(manager.get());
 
+            //baseURL
+            if (!StringUtils.isEmpty(baseUrl)) {
+                runner.setBaseURL(baseUrl);
+            }
+
             FilePath screenshotDir = build.getWorkspace().child("screenshots");
             screenshotDir.mkdirs();
             runner.setScreenshotDir(screenshotDir.getRemote());
@@ -90,6 +98,7 @@ public class SeleneseRunnerBuilder extends Builder {
 
             listener.getLogger().println("output junitresult xml to :" + junitdir.getRemote());
             listener.getLogger().println("selenese file : " + getSeleneseFile());
+            listener.getLogger().println("override baseUrl : " + baseUrl);
 
             JUnitResult.setResultDir(junitdir.getRemote());
             Result result = runner.run(getSeleneseFile());

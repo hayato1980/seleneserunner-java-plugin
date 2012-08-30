@@ -18,4 +18,7 @@
   <f:entry title="Get screenshot per command">
     <f:checkbox field="screenshotAll"/>
   </f:entry>
+  <f:entry title="override baseURL">
+    <f:textbox field="baseUrl"/>
+  </f:entry>
 </j:jelly>
