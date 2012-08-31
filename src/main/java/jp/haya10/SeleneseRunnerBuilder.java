@@ -11,7 +11,6 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
-import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -87,6 +86,8 @@ public class SeleneseRunnerBuilder extends Builder {
         try {
             manager.setWebDriverFactory(browser);
             Runner runner = new Runner();
+
+            //driver
             runner.setDriver(manager.get());
 
             //baseURL
@@ -94,6 +95,7 @@ public class SeleneseRunnerBuilder extends Builder {
                 runner.setBaseURL(baseUrl);
             }
 
+            //TODO screenshotDir to be configurable
             FilePath screenshotDir = build.getWorkspace().child("screenshots");
             screenshotDir.mkdirs();
             runner.setScreenshotDir(screenshotDir.getRemote());
@@ -101,6 +103,7 @@ public class SeleneseRunnerBuilder extends Builder {
                 runner.setScreenshotAllDir(screenshotDir.getRemote());
             }
 
+            //TODO junitdir to be configurable
             FilePath junitdir = build.getWorkspace().child("junitresult");
             junitdir.mkdirs();
 
@@ -152,6 +155,7 @@ public class SeleneseRunnerBuilder extends Builder {
             throws IOException, ServletException {
             if (StringUtils.isEmpty(value))
                 return FormValidation.error("Please set a selenese script filename");
+            //TODO check script file exists.
             return FormValidation.ok();
         }
 
