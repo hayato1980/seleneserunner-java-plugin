@@ -67,6 +67,14 @@ public class SeleneseRunnerBuilder extends Builder {
         return seleneseFile;
     }
 
+    public boolean isScreenshotAll() {
+        return screenshotAll;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
     public String getBrowser() {
         return browser;
     }

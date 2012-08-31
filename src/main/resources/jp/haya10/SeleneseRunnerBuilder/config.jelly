@@ -14,9 +14,9 @@
   </f:entry>
   <f:entry name="browser" title="browser setting" field="browser">
     <select name="browser">
-      <option value="firefox">Firefox</option>
-      <option value="chrome">Google Chrome</option>
-      <option value="ie">Internet Exproler</option>
+      <f:option value="firefox" selected="${instance.browser=='firefox'}">Firefox</f:option>
+      <f:option value="chrome" selected="${instance.browser=='chrome'}">Google chrome</f:option>
+      <f:option value="ie" selected="${instance.browser=='ie'}">Internet Exproler</f:option>
     </select>
   </f:entry>
   <f:entry title="Get screenshot per command">
