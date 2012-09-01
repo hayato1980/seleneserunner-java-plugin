@@ -1,4 +1,4 @@
-package jp.haya10;
+package jp.haya10.jenkins.seleneserunnerplugin;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -8,6 +8,7 @@ import hudson.model.FreeStyleProject;
 
 import java.io.File;
 
+import jp.haya10.jenkins.seleneserunnerplugin.SeleneseRunnerBuilder;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package jp.haya10;
+package jp.haya10.jenkins.seleneserunnerplugin;
 
 import hudson.Extension;
 import hudson.FilePath;

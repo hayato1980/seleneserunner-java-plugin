@@ -1,4 +1,4 @@
-package jp.haya10;
+package jp.haya10.jenkins.seleneserunnerplugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
