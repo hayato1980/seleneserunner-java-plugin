@@ -11,6 +11,7 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -155,7 +156,8 @@ public class SeleneseRunnerBuilder extends Builder {
             throws IOException, ServletException {
             if (StringUtils.isEmpty(value))
                 return FormValidation.error("Please set a selenese script filename");
-            //TODO check script file exists.
+            if (!new File(value).exists())
+                return FormValidation.warning("File is not exixts.");
             return FormValidation.ok();
         }
 
