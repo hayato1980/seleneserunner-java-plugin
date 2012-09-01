@@ -8,12 +8,10 @@ import hudson.model.FreeStyleProject;
 
 import java.io.File;
 
-import jp.haya10.jenkins.seleneserunnerplugin.SeleneseRunnerBuilder;
 import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 
 import org.junit.Assume;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.internal.AssumptionViolatedException;
 import org.jvnet.hudson.test.HudsonTestCase;
@@ -46,8 +44,8 @@ public class SeleneseRunnerBuilderTest extends HudsonTestCase {
     /**
      * Check Firefox connected.
      */
-    @Before
-    public void assumeConnectFirefox() {
+    @Override
+    protected void setUp() throws Exception {
         if (noDisplay)
             throw new AssumptionViolatedException("no display specified");
 
