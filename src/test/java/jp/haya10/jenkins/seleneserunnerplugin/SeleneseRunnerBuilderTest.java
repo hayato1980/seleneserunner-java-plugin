@@ -9,12 +9,20 @@ import hudson.model.FreeStyleProject;
 import java.io.File;
 
 import jp.haya10.jenkins.seleneserunnerplugin.SeleneseRunnerBuilder;
+import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.internal.AssumptionViolatedException;
 import org.jvnet.hudson.test.HudsonTestCase;
+import org.openqa.selenium.WebDriverException;
 
 public class SeleneseRunnerBuilderTest extends HudsonTestCase {
+
+    private static boolean noDisplay = false;
+
     @Test
     public void testRunSelenese() throws Exception {
         FreeStyleProject p = createFreeStyleProject();
@@ -33,5 +41,30 @@ public class SeleneseRunnerBuilderTest extends HudsonTestCase {
 
         FilePath screenshot = p.getSomeWorkspace().child("screenshots");
         assertThat(screenshot.list().isEmpty(), is(false));
+    }
+
+    /**
+     * Check Firefox connected.
+     */
+    @Before
+    public void assumeConnectFirefox() {
+        if (noDisplay)
+            throw new AssumptionViolatedException("no display specified");
+
+        setupWebDriverManager();
+        try {
+            WebDriverManager.getInstance().get();
+        } catch (WebDriverException e) {
+            if (e.getMessage().contains("no display specified")) {
+                noDisplay = true;
+                Assume.assumeNoException(e);
+            }
+        }
+    }
+
+    private void setupWebDriverManager() {
+        WebDriverManager manager = WebDriverManager.getInstance();
+        manager.setWebDriverFactory(WebDriverManager.FIREFOX);
+        manager.setDriverOptions(new DriverOptions());
     }
 }
