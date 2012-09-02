@@ -35,7 +35,7 @@ import org.kohsuke.stapler.StaplerRequest;
  * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
  * and a new {@link SeleneseRunnerBuilder} is created. The created
  * instance is persisted to the project configuration XML by using
- * XStream, so this allows you to use instance fields (like {@link #name})
+ * XStream, so this allows you to use instance fields (like {@link #seleneseFile})
  * to remember the configuration.
  *
  * <p>
