@@ -54,12 +54,15 @@ public class SeleneseRunnerBuilder extends Builder {
 
     private final String baseUrl;
 
+    private final String screenshotDir;
+
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public SeleneseRunnerBuilder(String seleneseFile, String browser, boolean screenshotAll, String baseUrl) {
+    public SeleneseRunnerBuilder(String seleneseFile, String browser, boolean screenshotAll, String screenshotDir, String baseUrl) {
         this.seleneseFile = seleneseFile;
         this.browser = browser;
         this.screenshotAll = screenshotAll;
+        this.screenshotDir = screenshotDir;
         this.baseUrl = baseUrl;
     }
 
@@ -69,6 +72,10 @@ public class SeleneseRunnerBuilder extends Builder {
 
     public boolean isScreenshotAll() {
         return screenshotAll;
+    }
+
+    public String getScreenshotDir() {
+        return screenshotDir;
     }
 
     public String getBaseUrl() {
@@ -96,12 +103,15 @@ public class SeleneseRunnerBuilder extends Builder {
                 runner.setBaseURL(baseUrl);
             }
 
-            //TODO screenshotDir to be configurable
-            FilePath screenshotDir = build.getWorkspace().child("screenshots");
-            screenshotDir.mkdirs();
-            runner.setScreenshotDir(screenshotDir.getRemote());
-            if (screenshotAll) {
-                runner.setScreenshotAllDir(screenshotDir.getRemote());
+            //scrennshot
+            FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
+            screenshotDirPath.mkdirs();
+            runner.setScreenshotDir(screenshotDirPath.getRemote());
+            if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
+                runner.setScreenshotAllDir(screenshotDirPath.getRemote());
+            }
+            if (!StringUtils.isEmpty(screenshotDir)) {
+                runner.setScreenshotDir(screenshotDirPath.getRemote());
             }
 
             //TODO junitdir to be configurable

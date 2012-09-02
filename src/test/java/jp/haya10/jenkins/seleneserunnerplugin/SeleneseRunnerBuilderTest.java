@@ -30,7 +30,7 @@ public class SeleneseRunnerBuilderTest {
         FreeStyleProject p = j.createFreeStyleProject();
         String file = TestUtils.getScriptFile(this.getClass(), "Simple");
         p.getBuildersList().add(
-            new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true, ""));
+            new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true, "./screenshot", ""));
 
         assertThat(new File(file).exists(), is(true));
         try {
@@ -41,7 +41,7 @@ public class SeleneseRunnerBuilderTest {
             }
         }
 
-        FilePath screenshot = p.getSomeWorkspace().child("screenshots");
+        FilePath screenshot = p.getSomeWorkspace().child("./screenshot");
         assertThat(screenshot.list().isEmpty(), is(false));
     }
 
