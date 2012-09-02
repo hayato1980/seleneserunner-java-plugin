@@ -106,6 +106,7 @@ public class SeleneseRunnerBuilder extends Builder {
             //scrennshot
             FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
             screenshotDirPath.mkdirs();
+            screenshotDirPath.deleteContents();
             runner.setScreenshotDir(screenshotDirPath.getRemote());
             if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
                 runner.setScreenshotAllDir(screenshotDirPath.getRemote());
