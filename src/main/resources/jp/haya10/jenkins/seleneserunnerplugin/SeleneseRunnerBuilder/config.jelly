@@ -19,6 +19,8 @@
       <f:option value="ie" selected="${instance.browser=='ie'}">Internet Exproler</f:option>
     </select>
   </f:entry>
+  <f:section>
+  <f:advanced>
   <f:entry title="Get screenshot per command">
     <f:checkbox field="screenshotAll"/>
   </f:entry>
@@ -28,4 +30,6 @@
   <f:entry title="override baseURL">
     <f:textbox field="baseUrl"/>
   </f:entry>
+  </f:advanced>
+  </f:section>
 </j:jelly>
