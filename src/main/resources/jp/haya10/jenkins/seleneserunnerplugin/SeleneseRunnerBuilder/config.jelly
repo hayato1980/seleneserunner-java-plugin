@@ -22,6 +22,9 @@
   <f:entry title="Get screenshot per command">
     <f:checkbox field="screenshotAll"/>
   </f:entry>
+  <f:entry title="Screenshot image directory">
+    <f:textbox field="screenshotDir"/>
+  </f:entry>
   <f:entry title="override baseURL">
     <f:textbox field="baseUrl"/>
   </f:entry>
