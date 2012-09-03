@@ -9,8 +9,8 @@
     Creates a text field that shows the value of the "seleneseFile" property.
     When submitted, it will be passed to the corresponding constructor parameter.
   -->
-  <f:entry title="selenese script">
-    <f:textbox field="seleneseFile" clazz="required"/>
+  <f:entry name="seleneseFile" title="selenese script" field="seleneseFile">
+    <f:textbox name="seleneseFile" field="seleneseFile" clazz="required"/>
   </f:entry>
   <f:entry name="browser" title="browser setting" field="browser">
     <select name="browser">
@@ -21,14 +21,14 @@
   </f:entry>
   <f:section>
     <f:advanced>
-      <f:entry title="Get screenshot per command">
-        <f:checkbox field="screenshotAll"/>
+      <f:entry name="screenshotAll" title="Get screenshot per command" field="screenshotAll">
+        <f:checkbox name="screenshotAll" field="screenshotAll"/>
       </f:entry>
-      <f:entry title="Screenshot image directory">
-        <f:textbox field="screenshotDir"/>
+      <f:entry name="screenshotDir" title="Screenshot image directory" field="screenshotDir">
+        <f:textbox name="screenshotDir" field="screenshotDir"/>
       </f:entry>
-      <f:entry title="override baseURL">
-        <f:textbox field="baseUrl"/>
+      <f:entry name="baseUrl" title="override baseURL" field="baseUrl">
+        <f:textbox name="baseUrl" field="baseUrl"/>
       </f:entry>
     </f:advanced>
   </f:section>
