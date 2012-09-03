@@ -124,7 +124,7 @@ public class SeleneseRunnerBuilder extends Builder {
             listener.getLogger().println("override baseUrl : " + baseUrl);
 
             JUnitResult.setResultDir(junitdir.getRemote());
-            Result result = runner.run(getSeleneseFile());
+            Result result = runner.run(build.getWorkspace().child(getSeleneseFile()).getRemote());
             result.getMessage();
             return result.isSuccess();
         } catch (Throwable t) {

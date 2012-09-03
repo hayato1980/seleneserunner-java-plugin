@@ -1,16 +1,19 @@
 package jp.haya10.jenkins.seleneserunnerplugin;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 import hudson.FilePath;
 import hudson.model.Result;
 import hudson.model.FreeStyleProject;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 
 import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,6 +36,30 @@ public class SeleneseRunnerBuilderTest {
             new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true, "./screenshot", ""));
 
         assertThat(new File(file).exists(), is(true));
+        try {
+            j.assertBuildStatus(Result.SUCCESS, p.scheduleBuild2(0).get());
+        } finally {
+            for (String log : p.getLastBuild().getLog(100)) {
+                System.out.println(log);
+            }
+        }
+
+        FilePath screenshot = p.getSomeWorkspace().child("./screenshot");
+        assertThat(screenshot.list().isEmpty(), is(false));
+    }
+
+    @Test
+    public void testRelPathSelenese() throws Exception {
+        FreeStyleProject p = j.createFreeStyleProject();
+
+        String file = TestUtils.getScriptFile(this.getClass(), "Simple");
+
+        j.assertBuildStatus(Result.SUCCESS, p.scheduleBuild2(0).get());
+        FileUtils.copyFile(new File(file), new File(p.getSomeWorkspace().child("test.html").getRemote()));
+
+        p.getBuildersList().add(
+            new SeleneseRunnerBuilder("test.html", WebDriverManager.FIREFOX, true, "./screenshot", ""));
+
         try {
             j.assertBuildStatus(Result.SUCCESS, p.scheduleBuild2(0).get());
         } finally {
