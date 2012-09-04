@@ -12,9 +12,6 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.File;
-import java.io.IOException;
-
-import javax.servlet.ServletException;
 
 import jp.vmi.junit.result.JUnitResult;
 import jp.vmi.selenium.selenese.Runner;
@@ -163,8 +160,7 @@ public class SeleneseRunnerBuilder extends Builder {
          * @return
          *      Indicates the outcome of the validation. This is sent to the browser.
          */
-        public FormValidation doCheckSeleneseFile(@QueryParameter String value)
-            throws IOException, ServletException {
+        public FormValidation doCheckSeleneseFile(@QueryParameter String value) {
             if (StringUtils.isEmpty(value))
                 return FormValidation.error("Please set a selenese script filename");
             if (!new File(value).exists())
