@@ -20,6 +20,7 @@ import jp.vmi.selenium.webdriver.WebDriverManager;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.validator.routines.UrlValidator;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -76,7 +77,7 @@ public class SeleneseRunnerBuilder extends Builder {
     }
 
     public String getBaseUrl() {
-        return baseUrl;
+        return StringUtils.trimToEmpty(baseUrl);
     }
 
     public String getBrowser() {
@@ -96,8 +97,8 @@ public class SeleneseRunnerBuilder extends Builder {
             runner.setDriver(manager.get());
 
             //baseURL
-            if (!StringUtils.isEmpty(baseUrl)) {
-                runner.setBaseURL(baseUrl);
+            if (!StringUtils.isEmpty(getBaseUrl())) {
+                runner.setBaseURL(getBaseUrl());
             }
 
             //scrennshot
@@ -166,6 +167,16 @@ public class SeleneseRunnerBuilder extends Builder {
             if (!new File(value).exists())
                 return FormValidation.warning("File is not exixts.");
             return FormValidation.ok();
+        }
+
+        public FormValidation doCheckBaseUrl(@QueryParameter String value) {
+            String[] schemes = { "http", "https" };
+            UrlValidator urlValidator = new UrlValidator(schemes);
+            if (StringUtils.isEmpty(value) || urlValidator.isValid(value)) {
+                return FormValidation.ok();
+            } else {
+                return FormValidation.error("This url is not valid.");
+            }
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
