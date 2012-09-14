@@ -24,6 +24,9 @@
       <f:entry name="screenshotAll" title="Get screenshot per command" field="screenshotAll">
         <f:checkbox name="screenshotAll" field="screenshotAll"/>
       </f:entry>
+      <f:entry name="screenshotOnFail" title="Get screenshot on fail" field="screenshotOnFail">
+        <f:checkbox name="screenshotOnFail" field="screenshotOnFail"/>
+      </f:entry>
       <f:entry name="screenshotDir" title="Screenshot image directory" field="screenshotDir">
         <f:textbox name="screenshotDir" field="screenshotDir"/>
       </f:entry>

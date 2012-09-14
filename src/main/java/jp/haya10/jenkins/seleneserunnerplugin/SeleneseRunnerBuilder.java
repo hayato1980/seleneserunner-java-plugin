@@ -50,16 +50,20 @@ public class SeleneseRunnerBuilder extends Builder {
 
     private final boolean screenshotAll;
 
+    private final boolean screenshotOnFail;
+
     private final String baseUrl;
 
     private final String screenshotDir;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public SeleneseRunnerBuilder(String seleneseFile, String browser, boolean screenshotAll, String screenshotDir, String baseUrl) {
+    public SeleneseRunnerBuilder(String seleneseFile, String browser, boolean screenshotAll, boolean screenshotOnFail,
+        String screenshotDir, String baseUrl) {
         this.seleneseFile = seleneseFile;
         this.browser = browser;
         this.screenshotAll = screenshotAll;
+        this.screenshotOnFail = screenshotOnFail;
         this.screenshotDir = screenshotDir;
         this.baseUrl = baseUrl;
     }
@@ -70,6 +74,10 @@ public class SeleneseRunnerBuilder extends Builder {
 
     public boolean isScreenshotAll() {
         return screenshotAll;
+    }
+
+    public boolean isScreenshotOnFail() {
+        return screenshotOnFail;
     }
 
     public String getScreenshotDir() {
@@ -108,6 +116,10 @@ public class SeleneseRunnerBuilder extends Builder {
             runner.setScreenshotDir(screenshotDirPath.getRemote());
             if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
                 runner.setScreenshotAllDir(screenshotDirPath.getRemote());
+            }
+            if (screenshotOnFail && !StringUtils.isEmpty(screenshotDir)) {
+                //FIXME 
+                //runner.setScreenshotOnFailDir(screenshotDirPath.getRemote());
             }
             if (!StringUtils.isEmpty(screenshotDir)) {
                 runner.setScreenshotDir(screenshotDirPath.getRemote());

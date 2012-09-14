@@ -33,7 +33,7 @@ public class SeleneseRunnerBuilderTest {
         FreeStyleProject p = j.createFreeStyleProject();
         String file = TestUtils.getScriptFile(this.getClass(), "Simple");
         p.getBuildersList().add(
-            new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true, "./screenshot", ""));
+            new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true, true, "./screenshot", ""));
 
         assertThat(new File(file).exists(), is(true));
         try {
@@ -58,7 +58,7 @@ public class SeleneseRunnerBuilderTest {
         FileUtils.copyFile(new File(file), new File(p.getSomeWorkspace().child("test.html").getRemote()));
 
         p.getBuildersList().add(
-            new SeleneseRunnerBuilder("test.html", WebDriverManager.FIREFOX, true, "./screenshot", ""));
+            new SeleneseRunnerBuilder("test.html", WebDriverManager.FIREFOX, true, true, "./screenshot", ""));
 
         try {
             j.assertBuildStatus(Result.SUCCESS, p.scheduleBuild2(0).get());
