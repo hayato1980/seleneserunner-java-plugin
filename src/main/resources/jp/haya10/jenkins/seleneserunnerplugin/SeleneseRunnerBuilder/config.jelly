@@ -19,7 +19,6 @@
       <f:option value="ie" selected="${instance.browser=='ie'}">Internet Exproler</f:option>
     </select>
   </f:entry>
-  <f:section>
     <f:advanced>
       <f:entry name="screenshotAll" title="Get screenshot per command" field="screenshotAll">
         <f:checkbox name="screenshotAll" field="screenshotAll"/>
@@ -37,5 +36,4 @@
         <f:textbox name="junitresult" field="junitresult"/>
       </f:entry>
     </f:advanced>
-  </f:section>
 </j:jelly>
