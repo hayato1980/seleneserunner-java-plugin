@@ -1,13 +1,14 @@
 package jp.haya10.jenkins.seleneserunnerplugin;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import hudson.FilePath;
+import hudson.model.FreeStyleBuild;
 import hudson.model.Result;
 import hudson.model.FreeStyleProject;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 
 import jp.vmi.selenium.webdriver.DriverOptions;
@@ -29,7 +30,7 @@ public class SeleneseRunnerBuilderTest {
     private static boolean noDisplay = false;
 
     @Test
-    public void testRunSelenese() throws Exception {
+    public void testAbsolutePathSelenese() throws Exception {
         FreeStyleProject p = j.createFreeStyleProject();
         String file = TestUtils.getScriptFile(this.getClass(), "Simple");
         p.getBuildersList().add(
@@ -52,24 +53,32 @@ public class SeleneseRunnerBuilderTest {
     public void testRelPathSelenese() throws Exception {
         FreeStyleProject p = j.createFreeStyleProject();
 
-        String file = TestUtils.getScriptFile(this.getClass(), "Simple");
+        //null build and getworkspace
+        FilePath workspace = p.scheduleBuild2(0).get().getWorkspace();
 
-        j.assertBuildStatus(Result.SUCCESS, p.scheduleBuild2(0).get());
-        FileUtils.copyFile(new File(file), new File(p.getSomeWorkspace().child("test.html").getRemote()));
+        //copy selenese to workspace
+        File src = new File(TestUtils.getScriptFile(this.getClass(), "Simple"));
+        File target = new File(workspace.createTempFile("selenese", ".html").getRemote());
+        FileUtils.copyFile(src, target);
+        assertThat(new File(target.getAbsolutePath()).exists(), is(true));
+
+        assertThat(target.getName().substring(0, 8), is("selenese"));
 
         p.getBuildersList().add(
-            new SeleneseRunnerBuilder("test.html", WebDriverManager.FIREFOX, true, true, "./screenshot", ""));
+            new SeleneseRunnerBuilder(target.getName(), WebDriverManager.FIREFOX, true, true, "./screenshot", ""));
 
         try {
-            j.assertBuildStatus(Result.SUCCESS, p.scheduleBuild2(0).get());
+            FreeStyleBuild build = p.scheduleBuild2(0).get();
+            j.assertBuildStatus(Result.SUCCESS, build);
+            FilePath screenshot = build.getWorkspace().child("screenshot");
+            assertNotNull(screenshot);
+            assertThat(screenshot.list().isEmpty(), is(false));
         } finally {
             for (String log : p.getLastBuild().getLog(100)) {
                 System.out.println(log);
             }
         }
 
-        FilePath screenshot = p.getSomeWorkspace().child("./screenshot");
-        assertThat(screenshot.list().isEmpty(), is(false));
     }
 
     /**
