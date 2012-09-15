@@ -33,6 +33,9 @@
       <f:entry name="baseUrl" title="override baseURL" field="baseUrl">
         <f:textbox name="baseUrl" field="baseUrl"/>
       </f:entry>
+      <f:entry name="junitresult" title="JUnit result xml dir" field="junitresult">
+        <f:textbox name="junitresult" field="junitresult"/>
+      </f:entry>
     </f:advanced>
   </f:section>
 </j:jelly>

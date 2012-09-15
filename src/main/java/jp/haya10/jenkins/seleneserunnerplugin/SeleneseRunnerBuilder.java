@@ -56,16 +56,23 @@ public class SeleneseRunnerBuilder extends Builder {
 
     private final String screenshotDir;
 
+    private final String junitresult;
+
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
     public SeleneseRunnerBuilder(String seleneseFile, String browser, boolean screenshotAll, boolean screenshotOnFail,
-        String screenshotDir, String baseUrl) {
+        String screenshotDir, String baseUrl, String junitresult) {
         this.seleneseFile = seleneseFile;
         this.browser = browser;
         this.screenshotAll = screenshotAll;
         this.screenshotOnFail = screenshotOnFail;
         this.screenshotDir = screenshotDir;
         this.baseUrl = baseUrl;
+        if (StringUtils.isEmpty(junitresult)) {
+            this.junitresult = "junitresult";
+        } else {
+            this.junitresult = junitresult;
+        }
     }
 
     public String getSeleneseFile() {
@@ -88,6 +95,10 @@ public class SeleneseRunnerBuilder extends Builder {
         return StringUtils.trimToEmpty(baseUrl);
     }
 
+    public String getJunitresult() {
+        return junitresult;
+    }
+
     public String getBrowser() {
         return browser;
     }
@@ -106,7 +117,7 @@ public class SeleneseRunnerBuilder extends Builder {
 
             //console log
             JUnitResult.setPrintStream(listener.getLogger());
-            
+
             //baseURL
             if (!StringUtils.isEmpty(getBaseUrl())) {
                 runner.setBaseURL(getBaseUrl());
@@ -128,8 +139,10 @@ public class SeleneseRunnerBuilder extends Builder {
             }
 
             //TODO junitdir to be configurable
-            FilePath junitdir = build.getWorkspace().child("junitresult");
+            FilePath junitdir = build.getWorkspace().child(junitresult);
             junitdir.mkdirs();
+            junitdir.deleteContents();
+            JUnitResult.setResultDir(junitdir.absolutize().getRemote());
 
             listener.getLogger().println("output junitresult xml to :" + junitdir.getRemote());
             listener.getLogger().println("selenese file : " + getSeleneseFile());
