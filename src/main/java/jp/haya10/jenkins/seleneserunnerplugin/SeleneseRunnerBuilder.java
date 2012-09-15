@@ -118,8 +118,7 @@ public class SeleneseRunnerBuilder extends Builder {
                 runner.setScreenshotAllDir(screenshotDirPath.getRemote());
             }
             if (screenshotOnFail && !StringUtils.isEmpty(screenshotDir)) {
-                //FIXME 
-                //runner.setScreenshotOnFailDir(screenshotDirPath.getRemote());
+                runner.setScreenshotOnFailDir(screenshotDirPath.getRemote());
             }
             if (!StringUtils.isEmpty(screenshotDir)) {
                 runner.setScreenshotDir(screenshotDirPath.getRemote());
