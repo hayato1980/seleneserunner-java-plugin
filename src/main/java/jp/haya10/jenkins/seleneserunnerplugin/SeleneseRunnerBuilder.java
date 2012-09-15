@@ -104,6 +104,9 @@ public class SeleneseRunnerBuilder extends Builder {
             //driver
             runner.setDriver(manager.get());
 
+            //console log
+            JUnitResult.setPrintStream(listener.getLogger());
+            
             //baseURL
             if (!StringUtils.isEmpty(getBaseUrl())) {
                 runner.setBaseURL(getBaseUrl());
