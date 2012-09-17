@@ -4,6 +4,7 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.BuildListener;
+import hudson.model.Environment;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
@@ -110,6 +111,9 @@ public class SeleneseRunnerBuilder extends Builder {
         WebDriverManager manager = WebDriverManager.getInstance();
         try {
             manager.setWebDriverFactory(browser);
+            manager.getEnvironmentVariables().clear();
+            manager.getEnvironmentVariables().putAll(build.getEnvironment(listener).descendingMap());
+
             Runner runner = new Runner();
 
             //driver
