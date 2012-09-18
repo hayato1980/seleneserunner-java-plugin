@@ -13,6 +13,7 @@ import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Map;
 
 import jp.vmi.junit.result.JUnitResult;
@@ -44,7 +45,8 @@ import org.kohsuke.stapler.StaplerRequest;
  *
  * @author Hayato Ito
  */
-public class SeleneseRunnerBuilder extends Builder {
+@SuppressWarnings("serial")
+public class SeleneseRunnerBuilder extends Builder implements Serializable {
 
     private final String seleneseFile;
 
