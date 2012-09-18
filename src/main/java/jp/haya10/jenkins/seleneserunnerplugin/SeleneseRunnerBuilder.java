@@ -4,15 +4,16 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.BuildListener;
-import hudson.model.Environment;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
+import hudson.remoting.Callable;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.File;
+import java.util.Map;
 
 import jp.vmi.junit.result.JUnitResult;
 import jp.vmi.selenium.selenese.Runner;
@@ -105,19 +106,14 @@ public class SeleneseRunnerBuilder extends Builder {
     }
 
     @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+    public boolean perform(final AbstractBuild build, Launcher launcher, BuildListener listener) {
         listener.getLogger().println("selenese start.");
 
-        WebDriverManager manager = WebDriverManager.getInstance();
         try {
-            manager.setWebDriverFactory(browser);
-            manager.getEnvironmentVariables().clear();
-            manager.getEnvironmentVariables().putAll(build.getEnvironment(listener).descendingMap());
+            final Runner runner = new Runner();
 
-            Runner runner = new Runner();
-
-            //driver
-            runner.setDriver(manager.get());
+            //Environment
+            final Map<String, String> env = build.getEnvironment(listener).descendingMap();
 
             //console log
             JUnitResult.setPrintStream(listener.getLogger());
@@ -128,19 +124,9 @@ public class SeleneseRunnerBuilder extends Builder {
             }
 
             //scrennshot
-            FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
+            final FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
             screenshotDirPath.mkdirs();
             screenshotDirPath.deleteContents();
-            runner.setScreenshotDir(screenshotDirPath.getRemote());
-            if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
-                runner.setScreenshotAllDir(screenshotDirPath.getRemote());
-            }
-            if (screenshotOnFail && !StringUtils.isEmpty(screenshotDir)) {
-                runner.setScreenshotOnFailDir(screenshotDirPath.getRemote());
-            }
-            if (!StringUtils.isEmpty(screenshotDir)) {
-                runner.setScreenshotDir(screenshotDirPath.getRemote());
-            }
 
             //junitdir
             FilePath junitdir = build.getWorkspace().child(junitresult);
@@ -153,7 +139,42 @@ public class SeleneseRunnerBuilder extends Builder {
             listener.getLogger().println("override baseUrl : " + baseUrl);
 
             JUnitResult.setResultDir(junitdir.getRemote());
-            Result result = runner.run(build.getWorkspace().child(getSeleneseFile()).getRemote());
+
+            //selenese file
+            final FilePath seleneseFilePath = build.getWorkspace().child(getSeleneseFile());
+
+            //boot selenese-runner on the target.
+            Result result = launcher.getChannel().call(
+                new Callable<Result, Throwable>() {
+                    private static final long serialVersionUID = -912670413639450931L;
+
+                    public Result call() throws Throwable {
+                        //screenshot dir
+                        if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
+                            runner.setScreenshotAllDir(screenshotDirPath.getRemote());
+                        }
+                        if (screenshotOnFail && !StringUtils.isEmpty(screenshotDir)) {
+                            runner.setScreenshotOnFailDir(screenshotDirPath.getRemote());
+                        }
+                        if (!StringUtils.isEmpty(screenshotDir)) {
+                            runner.setScreenshotDir(screenshotDirPath.getRemote());
+                        }
+
+                        //driver
+                        final WebDriverManager manager = WebDriverManager.getInstance();
+                        try {
+                            manager.setWebDriverFactory(browser);
+                            manager.getEnvironmentVariables().clear();
+                            manager.getEnvironmentVariables().putAll(env);
+
+                            runner.setDriver(manager.get());
+
+                            return runner.run(seleneseFilePath.getRemote());
+                        } finally {
+                            manager.quitAllDrivers();
+                        }
+                    }
+                });
             result.getMessage();
             return result.isSuccess();
         } catch (Throwable t) {
@@ -161,7 +182,6 @@ public class SeleneseRunnerBuilder extends Builder {
             return false;
         } finally {
             listener.getLogger().println("selenese finished.");
-            manager.quitAllDrivers();
         }
     }
 
