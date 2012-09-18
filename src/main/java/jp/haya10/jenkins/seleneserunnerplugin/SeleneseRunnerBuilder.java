@@ -142,7 +142,7 @@ public class SeleneseRunnerBuilder extends Builder {
                 runner.setScreenshotDir(screenshotDirPath.getRemote());
             }
 
-            //TODO junitdir to be configurable
+            //junitdir
             FilePath junitdir = build.getWorkspace().child(junitresult);
             junitdir.mkdirs();
             junitdir.deleteContents();
