@@ -122,12 +122,10 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             //scrennshot
             final FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
             screenshotDirPath.mkdirs();
-            screenshotDirPath.deleteContents();
 
             //junitdir
             final FilePath junitdir = build.getWorkspace().child(junitresult);
             junitdir.mkdirs();
-            junitdir.deleteContents();
 
             listener.getLogger().println("output junitresult xml to :" + junitdir.getRemote());
             listener.getLogger().println("selenese file : " + getSeleneseFile());
