@@ -18,7 +18,6 @@ import java.util.Map;
 
 import jp.vmi.junit.result.JUnitResult;
 import jp.vmi.selenium.selenese.Runner;
-import jp.vmi.selenium.selenese.result.Result;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 import net.sf.json.JSONObject;
 
@@ -135,11 +134,9 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             final FilePath seleneseFilePath = build.getWorkspace().child(getSeleneseFile());
 
             //boot selenese-runner on the target.
-            Result result = launcher.getChannel().call(
-                new Callable<Result, Throwable>() {
-                    private static final long serialVersionUID = -912670413639450931L;
-
-                    public Result call() throws Throwable {
+            return launcher.getChannel().call(
+                new Callable<Boolean, Throwable>() {
+                    public Boolean call() throws Throwable {
                         final Runner runner = new Runner();
                         //baseURL
                         if (!StringUtils.isEmpty(getBaseUrl())) {
@@ -169,14 +166,12 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
 
                             runner.setDriver(manager.get());
 
-                            return runner.run(seleneseFilePath.getRemote());
+                            return runner.run(seleneseFilePath.getRemote()).isSuccess();
                         } finally {
                             manager.quitAllDrivers();
                         }
                     }
                 });
-            result.getMessage();
-            return result.isSuccess();
         } catch (Throwable t) {
             t.printStackTrace(listener.getLogger());
             return false;
