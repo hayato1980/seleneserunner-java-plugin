@@ -112,7 +112,6 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         listener.getLogger().println("selenese start.");
 
         try {
-            final Runner runner = new Runner();
 
             //Environment
             final Map<String, String> env = build.getEnvironment(listener).descendingMap();
@@ -120,27 +119,19 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             //console log
             JUnitResult.setPrintStream(listener.getLogger());
 
-            //baseURL
-            if (!StringUtils.isEmpty(getBaseUrl())) {
-                runner.setBaseURL(getBaseUrl());
-            }
-
             //scrennshot
             final FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
             screenshotDirPath.mkdirs();
             screenshotDirPath.deleteContents();
 
             //junitdir
-            FilePath junitdir = build.getWorkspace().child(junitresult);
+            final FilePath junitdir = build.getWorkspace().child(junitresult);
             junitdir.mkdirs();
             junitdir.deleteContents();
-            JUnitResult.setResultDir(junitdir.absolutize().getRemote());
 
             listener.getLogger().println("output junitresult xml to :" + junitdir.getRemote());
             listener.getLogger().println("selenese file : " + getSeleneseFile());
             listener.getLogger().println("override baseUrl : " + baseUrl);
-
-            JUnitResult.setResultDir(junitdir.getRemote());
 
             //selenese file
             final FilePath seleneseFilePath = build.getWorkspace().child(getSeleneseFile());
@@ -151,6 +142,15 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                     private static final long serialVersionUID = -912670413639450931L;
 
                     public Result call() throws Throwable {
+                        final Runner runner = new Runner();
+                        //baseURL
+                        if (!StringUtils.isEmpty(getBaseUrl())) {
+                            runner.setBaseURL(getBaseUrl());
+                        }
+
+                        //junitdir
+                        JUnitResult.setResultDir(junitdir.getRemote());
+
                         //screenshot dir
                         if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
                             runner.setScreenshotAllDir(screenshotDirPath.getRemote());
