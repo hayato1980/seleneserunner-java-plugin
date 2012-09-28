@@ -4,19 +4,20 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.BuildListener;
-import hudson.model.Environment;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
+import hudson.remoting.Callable;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.Map;
 
 import jp.vmi.junit.result.JUnitResult;
 import jp.vmi.selenium.selenese.Runner;
-import jp.vmi.selenium.selenese.result.Result;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 import net.sf.json.JSONObject;
 
@@ -43,7 +44,8 @@ import org.kohsuke.stapler.StaplerRequest;
  *
  * @author Hayato Ito
  */
-public class SeleneseRunnerBuilder extends Builder {
+@SuppressWarnings("serial")
+public class SeleneseRunnerBuilder extends Builder implements Serializable {
 
     private final String seleneseFile;
 
@@ -105,63 +107,76 @@ public class SeleneseRunnerBuilder extends Builder {
     }
 
     @Override
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+    public boolean perform(final AbstractBuild build, Launcher launcher, BuildListener listener) {
         listener.getLogger().println("selenese start.");
 
-        WebDriverManager manager = WebDriverManager.getInstance();
         try {
-            manager.setWebDriverFactory(browser);
-            manager.getEnvironmentVariables().clear();
-            manager.getEnvironmentVariables().putAll(build.getEnvironment(listener).descendingMap());
 
-            Runner runner = new Runner();
-
-            //driver
-            runner.setDriver(manager.get());
+            //Environment
+            final Map<String, String> env = build.getEnvironment(listener).descendingMap();
 
             //console log
             JUnitResult.setPrintStream(listener.getLogger());
 
-            //baseURL
-            if (!StringUtils.isEmpty(getBaseUrl())) {
-                runner.setBaseURL(getBaseUrl());
-            }
-
             //scrennshot
-            FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
+            final FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
             screenshotDirPath.mkdirs();
-            screenshotDirPath.deleteContents();
-            runner.setScreenshotDir(screenshotDirPath.getRemote());
-            if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
-                runner.setScreenshotAllDir(screenshotDirPath.getRemote());
-            }
-            if (screenshotOnFail && !StringUtils.isEmpty(screenshotDir)) {
-                runner.setScreenshotOnFailDir(screenshotDirPath.getRemote());
-            }
-            if (!StringUtils.isEmpty(screenshotDir)) {
-                runner.setScreenshotDir(screenshotDirPath.getRemote());
-            }
 
             //junitdir
-            FilePath junitdir = build.getWorkspace().child(junitresult);
+            final FilePath junitdir = build.getWorkspace().child(junitresult);
             junitdir.mkdirs();
-            junitdir.deleteContents();
-            JUnitResult.setResultDir(junitdir.absolutize().getRemote());
 
             listener.getLogger().println("output junitresult xml to :" + junitdir.getRemote());
             listener.getLogger().println("selenese file : " + getSeleneseFile());
             listener.getLogger().println("override baseUrl : " + baseUrl);
 
-            JUnitResult.setResultDir(junitdir.getRemote());
-            Result result = runner.run(build.getWorkspace().child(getSeleneseFile()).getRemote());
-            result.getMessage();
-            return result.isSuccess();
+            //selenese file
+            final FilePath seleneseFilePath = build.getWorkspace().child(getSeleneseFile());
+
+            //boot selenese-runner on the target.
+            return launcher.getChannel().call(
+                new Callable<Boolean, Throwable>() {
+                    public Boolean call() throws Throwable {
+                        final Runner runner = new Runner();
+                        //baseURL
+                        if (!StringUtils.isEmpty(getBaseUrl())) {
+                            runner.setBaseURL(getBaseUrl());
+                        }
+
+                        //junitdir
+                        JUnitResult.setResultDir(junitdir.getRemote());
+
+                        //screenshot dir
+                        if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
+                            runner.setScreenshotAllDir(screenshotDirPath.getRemote());
+                        }
+                        if (screenshotOnFail && !StringUtils.isEmpty(screenshotDir)) {
+                            runner.setScreenshotOnFailDir(screenshotDirPath.getRemote());
+                        }
+                        if (!StringUtils.isEmpty(screenshotDir)) {
+                            runner.setScreenshotDir(screenshotDirPath.getRemote());
+                        }
+
+                        //driver
+                        final WebDriverManager manager = new WebDriverManager();
+                        try {
+                            manager.setWebDriverFactory(browser);
+                            manager.getEnvironmentVariables().clear();
+                            manager.getEnvironmentVariables().putAll(env);
+
+                            runner.setDriver(manager.get());
+
+                            return runner.run(seleneseFilePath.getRemote()).isSuccess();
+                        } finally {
+                            manager.quitAllDrivers();
+                        }
+                    }
+                });
         } catch (Throwable t) {
             t.printStackTrace(listener.getLogger());
             return false;
         } finally {
             listener.getLogger().println("selenese finished.");
-            manager.quitAllDrivers();
         }
     }
 
