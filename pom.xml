@@ -54,6 +54,10 @@
 				<artifactId>htmlunit</artifactId>
 				<groupId>net.sourceforge.htmlunit</groupId>
 			</exclusion>
+			<exclusion>
+				<artifactId>guice</artifactId>
+				<groupId>com.google.inject</groupId>
+			</exclusion>
 		</exclusions>
   	</dependency>
   	<dependency>

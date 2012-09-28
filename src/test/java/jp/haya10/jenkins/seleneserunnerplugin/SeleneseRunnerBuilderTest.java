@@ -8,6 +8,10 @@ import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
 import hudson.model.Result;
 import hudson.model.FreeStyleProject;
+import hudson.model.Label;
+import hudson.model.labels.LabelAtom;
+import hudson.remoting.VirtualChannel;
+import hudson.slaves.DumbSlave;
 
 import java.io.File;
 
@@ -32,6 +36,9 @@ public class SeleneseRunnerBuilderTest {
     @Test
     public void testAbsolutePathSelenese() throws Exception {
         FreeStyleProject p = j.createFreeStyleProject();
+        DumbSlave slave = j.createOnlineSlave(new LabelAtom("test"));
+        p.setAssignedLabel(new LabelAtom("test"));
+
         String file = TestUtils.getScriptFile(this.getClass(), "Simple");
         p.getBuildersList().add(
             new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true, true, "./screenshot", "", "junitresult"));
@@ -52,6 +59,8 @@ public class SeleneseRunnerBuilderTest {
     @Test
     public void testRelPathSelenese() throws Exception {
         FreeStyleProject p = j.createFreeStyleProject();
+        DumbSlave slave = j.createOnlineSlave(new LabelAtom("test"));
+        p.setAssignedLabel(new LabelAtom("test"));
 
         //null build and getworkspace
         FilePath workspace = p.scheduleBuild2(0).get().getWorkspace();
