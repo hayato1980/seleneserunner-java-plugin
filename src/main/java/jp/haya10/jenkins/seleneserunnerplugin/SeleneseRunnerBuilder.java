@@ -107,7 +107,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
     }
 
     @Override
-    public boolean perform(final AbstractBuild build, Launcher launcher, BuildListener listener) {
+    public boolean perform(final AbstractBuild build, Launcher launcher, final BuildListener listener) {
         listener.getLogger().println("selenese start.");
 
         try {
