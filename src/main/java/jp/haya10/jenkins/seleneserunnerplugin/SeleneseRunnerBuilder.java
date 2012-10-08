@@ -115,9 +115,6 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             //Environment
             final Map<String, String> env = build.getEnvironment(listener).descendingMap();
 
-            //console log
-            JUnitResult.setPrintStream(listener.getLogger());
-
             //scrennshot
             final FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
             screenshotDirPath.mkdirs();
@@ -142,6 +139,9 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                         if (!StringUtils.isEmpty(getBaseUrl())) {
                             runner.setBaseURL(getBaseUrl());
                         }
+
+                        //console log
+                        runner.setPrintStream(listener.getLogger());
 
                         //junitdir
                         runner.setResultDir(junitdir.getRemote());
