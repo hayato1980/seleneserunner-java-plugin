@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.containsString;
 import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
 import hudson.model.Result;
@@ -19,6 +20,7 @@ import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Rule;
@@ -82,6 +84,9 @@ public class SeleneseRunnerBuilderTest {
             FilePath screenshot = build.getWorkspace().child("screenshot");
             assertNotNull(screenshot);
             assertThat(screenshot.list().isEmpty(), is(false));
+
+            // test logging to console log.
+            assertThat(StringUtils.join(p.getLastBuild().getLog(100).toArray()), containsString("[INFO]"));
         } finally {
             for (String log : p.getLastBuild().getLog(100)) {
                 System.out.println(log);
