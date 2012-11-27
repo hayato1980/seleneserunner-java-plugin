@@ -8,7 +8,7 @@
 
   <groupId>jp.haya10</groupId>
   <artifactId>seleneserunner-java-plugin</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <properties>
