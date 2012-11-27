@@ -16,7 +16,7 @@
     <select name="browser">
       <f:option value="firefox" selected="${instance.browser=='firefox'}">Firefox</f:option>
       <f:option value="chrome" selected="${instance.browser=='chrome'}">Google chrome</f:option>
-      <f:option value="ie" selected="${instance.browser=='ie'}">Internet Exproler</f:option>
+      <f:option value="ie" selected="${instance.browser=='ie'}">Internet Exproler(experimental)</f:option>
     </select>
   </f:entry>
   <f:advanced>
