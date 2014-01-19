@@ -1,7 +1,6 @@
 package jp.haya10.jenkins.seleneserunnerplugin;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
@@ -9,9 +8,7 @@ import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
 import hudson.model.Result;
 import hudson.model.FreeStyleProject;
-import hudson.model.Label;
 import hudson.model.labels.LabelAtom;
-import hudson.remoting.VirtualChannel;
 import hudson.slaves.DumbSlave;
 
 import java.io.File;
