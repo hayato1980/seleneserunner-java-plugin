@@ -18,4 +18,4 @@ before_script:
 install: /bin/true
 script:
   - set -o pipefail
-  - mvn install -U -e -DskipTests=false | grep -v "Downloading:" | grep -v "Downloaded:"
+  - mvn clean package -U -e -DskipTests=false | grep -v "Downloading:" | grep -v "Downloaded:"
