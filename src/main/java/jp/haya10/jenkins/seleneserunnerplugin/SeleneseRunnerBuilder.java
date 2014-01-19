@@ -16,8 +16,9 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 
-import jp.vmi.junit.result.JUnitResult;
 import jp.vmi.selenium.selenese.Runner;
+import jp.vmi.selenium.webdriver.DriverOptions;
+import jp.vmi.selenium.webdriver.DriverOptions.DriverOption;
 import jp.vmi.selenium.webdriver.WebDriverManager;
 import net.sf.json.JSONObject;
 
@@ -130,6 +131,11 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             //selenese file
             final FilePath seleneseFilePath = build.getWorkspace().child(getSeleneseFile());
 
+            DriverOptions opt = new DriverOptions();
+            opt.set(DriverOption.CHROMEDRIVER, PathUtils
+                .searchExecutableFile("chromedriver").get(0).getAbsolutePath());
+            listener.getLogger().println("chromedriver:" + opt.get(DriverOption.CHROMEDRIVER));
+
             //boot selenese-runner on the target.
             return launcher.getChannel().call(
                 new Callable<Boolean, Throwable>() {
@@ -144,7 +150,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                         runner.setPrintStream(listener.getLogger());
 
                         //junitdir
-                        runner.setResultDir(junitdir.getRemote());
+                        runner.setJUnitResultDir(junitdir.getRemote());
 
                         //screenshot dir
                         if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
@@ -161,6 +167,13 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                         final WebDriverManager manager = new WebDriverManager();
                         try {
                             manager.setWebDriverFactory(browser);
+                            listener.getLogger().println("browser:" + browser);
+                            if (browser.equals(WebDriverManager.CHROME)) {
+                                DriverOptions opt = new DriverOptions();
+                                opt.set(DriverOption.CHROMEDRIVER, PathUtils
+                                    .searchExecutableFile("chromedriver").get(0).getAbsolutePath());
+                                listener.getLogger().println("chromedriver:" + opt.get(DriverOption.CHROMEDRIVER));
+                            }
                             manager.getEnvironmentVariables().clear();
                             manager.getEnvironmentVariables().putAll(env);
 
