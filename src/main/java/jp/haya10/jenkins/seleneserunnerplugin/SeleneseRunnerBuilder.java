@@ -164,7 +164,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                         }
 
                         //driver
-                        final WebDriverManager manager = new WebDriverManager();
+                        final WebDriverManager manager = WebDriverManager.getInstance();
                         try {
                             manager.setWebDriverFactory(browser);
                             listener.getLogger().println("browser:" + browser);
