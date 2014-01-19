@@ -16,4 +16,4 @@ before_install:
 before_script:
   - "phantomjs --version"
 install: /bin/true
-script: mvn install -U -e -DskipTests=false | grep -v "Downloading:"
+script: mvn install -U -e -DskipTests=false | grep -v "^Download\(ing\|ed\):"
