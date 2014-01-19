@@ -72,11 +72,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         this.screenshotOnFail = screenshotOnFail;
         this.screenshotDir = screenshotDir;
         this.baseUrl = baseUrl;
-        if (StringUtils.isEmpty(junitresult)) {
-            this.junitresult = "junitresult";
-        } else {
-            this.junitresult = junitresult;
-        }
+        this.junitresult = junitresult;
     }
 
     public String getSeleneseFile() {
@@ -120,21 +116,11 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             final FilePath screenshotDirPath = build.getWorkspace().child(screenshotDir);
             screenshotDirPath.mkdirs();
 
-            //junitdir
-            final FilePath junitdir = build.getWorkspace().child(junitresult);
-            junitdir.mkdirs();
-
-            listener.getLogger().println("output junitresult xml to :" + junitdir.getRemote());
             listener.getLogger().println("selenese file : " + getSeleneseFile());
             listener.getLogger().println("override baseUrl : " + baseUrl);
 
             //selenese file
             final FilePath seleneseFilePath = build.getWorkspace().child(getSeleneseFile());
-
-            DriverOptions opt = new DriverOptions();
-            opt.set(DriverOption.CHROMEDRIVER, PathUtils
-                .searchExecutableFile("chromedriver").get(0).getAbsolutePath());
-            listener.getLogger().println("chromedriver:" + opt.get(DriverOption.CHROMEDRIVER));
 
             //boot selenese-runner on the target.
             return launcher.getChannel().call(
@@ -150,7 +136,12 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                         runner.setPrintStream(listener.getLogger());
 
                         //junitdir
-                        runner.setJUnitResultDir(junitdir.getRemote());
+                        if (!StringUtils.isEmpty(junitresult)) {
+                            final FilePath junitdir = build.getWorkspace().child(junitresult);
+                            junitdir.mkdirs();
+                            runner.setJUnitResultDir(junitdir.getRemote());
+                            listener.getLogger().println("output junitresult xml to :" + junitresult);
+                        }
 
                         //screenshot dir
                         if (screenshotAll && !StringUtils.isEmpty(screenshotDir)) {
@@ -164,7 +155,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                         }
 
                         //driver
-                        final WebDriverManager manager = new WebDriverManager();
+                        final WebDriverManager manager = WebDriverManager.getInstance();
                         try {
                             manager.setWebDriverFactory(browser);
                             listener.getLogger().println("browser:" + browser);
