@@ -17,6 +17,15 @@
   </properties>
 
   <!-- get every artifact through repo.jenkins-ci.org, which proxies all the artifacts that we need -->
+  <build>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.jenkins-ci.tools</groupId>
+  			<artifactId>maven-hpi-plugin</artifactId>
+  			<version>1.106</version>
+  		</plugin>
+  	</plugins>
+  </build>
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
