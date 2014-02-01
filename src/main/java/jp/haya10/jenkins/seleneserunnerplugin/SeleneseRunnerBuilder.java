@@ -45,10 +45,10 @@ import org.kohsuke.stapler.StaplerRequest;
  *
  * @author Hayato Ito
  */
-@SuppressWarnings("serial")
 public class SeleneseRunnerBuilder extends Builder implements Serializable {
 
     private final String seleneseFile;
+    private static final long serialVersionUID = -6980802829735878901L;
 
     private final String browser;
 
