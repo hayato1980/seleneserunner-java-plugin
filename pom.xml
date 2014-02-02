@@ -23,6 +23,9 @@
   			<groupId>org.jenkins-ci.tools</groupId>
   			<artifactId>maven-hpi-plugin</artifactId>
   			<version>1.106</version>
+  			<configuration>
+  			  <pluginFirstClassLoader>true</pluginFirstClassLoader>
+  			</configuration>
   		</plugin>
   	</plugins>
   </build>
@@ -89,6 +92,13 @@
   		<version>2.7.1</version>
   		<type>jar</type>
   		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.google.inject</groupId>
+  		<artifactId>guice</artifactId>
+  		<version>4.0-beta</version>
+  		<type>jar</type>
+  		<scope>runtime</scope>
   	</dependency>
   </dependencies>
 </project>
