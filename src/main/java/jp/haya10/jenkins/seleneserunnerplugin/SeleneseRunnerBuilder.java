@@ -27,6 +27,7 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 
 /**
  * Sample {@link Builder}.
@@ -119,6 +120,12 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                         .searchExecutableFile("chromedriver").get(0).getAbsolutePath());
                     listener.getLogger().println("chromedriver:" + opt.get(DriverOption.CHROMEDRIVER));
                 }
+                if (builder.browser.equals(WebDriverManager.PHANTOMJS)) {
+                    DriverOptions opt = new DriverOptions();
+                    opt.set(DriverOption.DEFINE, PhantomJSDriverService.PHANTOMJS_CLI_ARGS + "+=--webdriver-logfile=");
+                    manager.setDriverOptions(opt);
+                }
+
                 manager.getEnvironmentVariables().clear();
                 manager.getEnvironmentVariables().putAll(env);
 
