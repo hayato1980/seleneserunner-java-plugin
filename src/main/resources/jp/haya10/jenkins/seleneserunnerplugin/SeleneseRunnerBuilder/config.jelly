@@ -42,5 +42,8 @@
         <f:option value="iPhone3GS" selected="${instance.displaySize=='iPhone3GS'}">iPhone3GS - 320x480</f:option>
       </select>
     </f:entry>
+    <f:entry name="define capability" title="Webdriver Capability" field="capabilities">
+      <f:expandableTextbox name="capabilities" field="capabilities"/>
+    </f:entry>
   </f:advanced>
 </j:jelly>

@@ -65,6 +65,8 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
 
     private final String size;
 
+    private final String capabilities;
+
     private static class SeleneseRunnerCallable implements Callable<Boolean, Throwable> {
         private static final long serialVersionUID = 2416651790883391162L;
 
@@ -75,10 +77,11 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         FilePath seleneseFilePath;
         int height;
         int width;
+        String[] capabilities;
         Map<String, String> env;
 
         public SeleneseRunnerCallable(SeleneseRunnerBuilder builder, BuildListener listener, FilePath junitdir,
-            FilePath screenshotDirPath, FilePath seleneseFilePath, int height, int width, Map<String, String> env) {
+            FilePath screenshotDirPath, FilePath seleneseFilePath, int height, int width, String[] capabilities, Map<String, String> env) {
             super();
             this.builder = builder;
             this.listener = listener;
@@ -87,6 +90,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             this.seleneseFilePath = seleneseFilePath;
             this.height = height;
             this.width = width;
+            this.capabilities = capabilities;
             this.env = env;
         }
 
@@ -134,6 +138,11 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                     }
                 }
 
+                //add each defined capability
+                for (String capability : capabilities) {
+                    opt.set(DriverOption.DEFINE, capability);
+                }
+
                 manager.setDriverOptions(opt);
                 manager.getEnvironmentVariables().clear();
                 manager.getEnvironmentVariables().putAll(env);
@@ -158,11 +167,12 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
      * @param baseUrl
      * @param junitresult
      * @param size
+     * @param capabilities
      */
     @DataBoundConstructor
     public SeleneseRunnerBuilder(final String seleneseFile, final String browser, final boolean screenshotAll,
         final boolean screenshotOnFail,
-        final String screenshotDir, final String baseUrl, final String junitresult, final String size) {
+        final String screenshotDir, final String baseUrl, final String junitresult, final String size, final String capabilities) {
         this.seleneseFile = seleneseFile;
         this.browser = browser;
         this.screenshotAll = screenshotAll;
@@ -171,6 +181,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         this.baseUrl = baseUrl;
         this.junitresult = junitresult;
         this.size = size;
+        this.capabilities = capabilities;
     }
 
     public String getSeleneseFile() {
@@ -203,6 +214,10 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
 
     public String getSize() {
         return size;
+    }
+
+    public String getCapabilities() {
+        return capabilities;
     }
 
     @Override
@@ -243,9 +258,12 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                 height = 480;
             }
 
+            //capabilities
+            String[] capabilities = getCapabilities().split("\n");
+
             //boot selenese-runner on the target.
             SeleneseRunnerCallable callable = new SeleneseRunnerCallable(this, listener, junitdir, screenshotDirPath, seleneseFilePath,
-                height, width,
+                height, width, capabilities,
                 env);
             return launcher.getChannel().call(callable);
         } catch (Throwable t) {
