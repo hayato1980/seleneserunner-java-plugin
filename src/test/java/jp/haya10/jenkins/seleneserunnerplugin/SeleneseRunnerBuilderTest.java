@@ -40,7 +40,7 @@ public class SeleneseRunnerBuilderTest {
 
         String file = TestUtils.getScriptFile(this.getClass(), "Simple");
         p.getBuildersList().add(
-            new SeleneseRunnerBuilder(file, WebDriverManager.FIREFOX, true, true, "./screenshot", "", "junitresult"));
+            new SeleneseRunnerBuilder(file, WebDriverManager.PHANTOMJS, true, true, "./screenshot", "", "junitresult", null));
 
         assertThat(new File(file).exists(), is(true));
         try {
@@ -73,7 +73,7 @@ public class SeleneseRunnerBuilderTest {
         assertThat(target.getName().substring(0, 8), is("selenese"));
 
         p.getBuildersList().add(
-            new SeleneseRunnerBuilder(target.getName(), WebDriverManager.FIREFOX, true, true, "./screenshot", "", "junitresult"));
+            new SeleneseRunnerBuilder(target.getName(), WebDriverManager.PHANTOMJS, true, true, "./screenshot", "", "junitresult", null));
 
         try {
             FreeStyleBuild build = p.scheduleBuild2(0).get();
