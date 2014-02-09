@@ -36,5 +36,11 @@
     <f:entry name="junitresult" title="JUnit result xml dir" field="junitresult">
       <f:textbox name="junitresult" field="junitresult"/>
     </f:entry>
+    <f:entry name="Browser Size" title="Browser Size (only PhantomJS)" field="size">
+      <select name="size">
+        <f:option value="xga" selected="${instance.displaySize=='xga'}">XGA - 1024x768</f:option>
+        <f:option value="iPhone3GS" selected="${instance.displaySize=='iPhone3GS'}">iPhone3GS - 320x480</f:option>
+      </select>
+    </f:entry>
   </f:advanced>
 </j:jelly>

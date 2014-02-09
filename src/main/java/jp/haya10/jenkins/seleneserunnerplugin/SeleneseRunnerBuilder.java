@@ -63,6 +63,8 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
 
     private final String junitresult;
 
+    private final String size;
+
     private static class SeleneseRunnerCallable implements Callable<Boolean, Throwable> {
         private static final long serialVersionUID = 2416651790883391162L;
 
@@ -71,16 +73,20 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         FilePath junitdir;
         FilePath screenshotDirPath;
         FilePath seleneseFilePath;
+        int height;
+        int width;
         Map<String, String> env;
 
         public SeleneseRunnerCallable(SeleneseRunnerBuilder builder, BuildListener listener, FilePath junitdir,
-            FilePath screenshotDirPath, FilePath seleneseFilePath, Map<String, String> env) {
+            FilePath screenshotDirPath, FilePath seleneseFilePath, int height, int width, Map<String, String> env) {
             super();
             this.builder = builder;
             this.listener = listener;
             this.junitdir = junitdir;
             this.screenshotDirPath = screenshotDirPath;
             this.seleneseFilePath = seleneseFilePath;
+            this.height = height;
+            this.width = width;
             this.env = env;
         }
 
@@ -123,6 +129,12 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                 if (builder.browser.equals(WebDriverManager.PHANTOMJS)) {
                     DriverOptions opt = new DriverOptions();
                     opt.set(DriverOption.DEFINE, PhantomJSDriverService.PHANTOMJS_CLI_ARGS + "+=--webdriver-logfile=");
+
+                    if (height != 0 && width != 0) {
+                        opt.set(DriverOption.HEIGHT, String.valueOf(height));
+                        opt.set(DriverOption.WIDTH, String.valueOf(width));
+                    }
+
                     manager.setDriverOptions(opt);
                 }
 
@@ -148,11 +160,12 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
      * @param screenshotDir
      * @param baseUrl
      * @param junitresult
+     * @param size
      */
     @DataBoundConstructor
     public SeleneseRunnerBuilder(final String seleneseFile, final String browser, final boolean screenshotAll,
         final boolean screenshotOnFail,
-        final String screenshotDir, final String baseUrl, final String junitresult) {
+        final String screenshotDir, final String baseUrl, final String junitresult, final String size) {
         this.seleneseFile = seleneseFile;
         this.browser = browser;
         this.screenshotAll = screenshotAll;
@@ -160,6 +173,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         this.screenshotDir = screenshotDir;
         this.baseUrl = baseUrl;
         this.junitresult = junitresult;
+        this.size = size;
     }
 
     public String getSeleneseFile() {
@@ -190,6 +204,10 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         return browser;
     }
 
+    public String getSize() {
+        return size;
+    }
+
     @Override
     public boolean perform(final AbstractBuild build, Launcher launcher, final BuildListener listener) {
         listener.getLogger().println("selenese start.");
@@ -217,8 +235,20 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                 listener.getLogger().println("output junitresult xml to :" + getJunitresult());
             }
 
+            //size
+            int height = 0;
+            int width = 0;
+            if ("XGA".equals(getSize())) {
+                width = 1024;
+                height = 768;
+            } else if ("iPhone3GS".equals(getSize())) {
+                width = 320;
+                height = 480;
+            }
+
             //boot selenese-runner on the target.
             SeleneseRunnerCallable callable = new SeleneseRunnerCallable(this, listener, junitdir, screenshotDirPath, seleneseFilePath,
+                height, width,
                 env);
             return launcher.getChannel().call(callable);
         } catch (Throwable t) {
