@@ -128,8 +128,6 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                     listener.getLogger().println("chromedriver:" + opt.get(DriverOption.CHROMEDRIVER));
                 }
                 if (builder.browser.equals(WebDriverManager.PHANTOMJS)) {
-                    opt.set(DriverOption.DEFINE, PhantomJSDriverService.PHANTOMJS_CLI_ARGS + "+=--webdriver-logfile=");
-
                     if (height != 0 && width != 0) {
                         opt.set(DriverOption.HEIGHT, String.valueOf(height));
                         opt.set(DriverOption.WIDTH, String.valueOf(width));
