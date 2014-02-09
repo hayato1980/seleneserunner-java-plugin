@@ -120,24 +120,23 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             try {
                 manager.setWebDriverFactory(builder.browser);
                 listener.getLogger().println("browser:" + builder.browser);
+
+                DriverOptions opt = new DriverOptions();
                 if (builder.browser.equals(WebDriverManager.CHROME)) {
-                    DriverOptions opt = new DriverOptions();
                     opt.set(DriverOption.CHROMEDRIVER, PathUtils
                         .searchExecutableFile("chromedriver").get(0).getAbsolutePath());
                     listener.getLogger().println("chromedriver:" + opt.get(DriverOption.CHROMEDRIVER));
                 }
                 if (builder.browser.equals(WebDriverManager.PHANTOMJS)) {
-                    DriverOptions opt = new DriverOptions();
                     opt.set(DriverOption.DEFINE, PhantomJSDriverService.PHANTOMJS_CLI_ARGS + "+=--webdriver-logfile=");
 
                     if (height != 0 && width != 0) {
                         opt.set(DriverOption.HEIGHT, String.valueOf(height));
                         opt.set(DriverOption.WIDTH, String.valueOf(width));
                     }
-
-                    manager.setDriverOptions(opt);
                 }
 
+                manager.setDriverOptions(opt);
                 manager.getEnvironmentVariables().clear();
                 manager.getEnvironmentVariables().putAll(env);
 
