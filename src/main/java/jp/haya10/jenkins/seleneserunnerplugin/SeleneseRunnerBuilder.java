@@ -140,7 +140,9 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
 
                 //add each defined capability
                 for (String capability : capabilities) {
-                    opt.set(DriverOption.DEFINE, capability);
+                    if (!StringUtils.isEmpty(capability)) {
+                        opt.set(DriverOption.DEFINE, capability);
+                    }
                 }
 
                 manager.setDriverOptions(opt);
@@ -259,7 +261,12 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             }
 
             //capabilities
-            String[] capabilities = getCapabilities().split("\n");
+            String[] capabilities = null;
+            if (getCapabilities() == null) {
+                capabilities = new String[] {};
+            } else {
+                capabilities = getCapabilities().split("\n");
+            }
 
             //boot selenese-runner on the target.
             SeleneseRunnerCallable callable = new SeleneseRunnerCallable(this, listener, junitdir, screenshotDirPath, seleneseFilePath,
