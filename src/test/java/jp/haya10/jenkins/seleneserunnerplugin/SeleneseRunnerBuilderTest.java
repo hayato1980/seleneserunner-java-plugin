@@ -12,6 +12,8 @@ import hudson.model.labels.LabelAtom;
 import hudson.slaves.DumbSlave;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.WebDriverManager;
@@ -23,12 +25,31 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.internal.AssumptionViolatedException;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.openqa.selenium.WebDriverException;
 
+@RunWith(Parameterized.class)
+@SuppressWarnings("javadoc")
 public class SeleneseRunnerBuilderTest {
     @Rule
     public JenkinsRule j = new JenkinsRule();
+
+    @Parameters(name = "{index}: {0}")
+    public static List<Object[]> getBrowsers() {
+        return Arrays.asList(new Object[][] {
+            { WebDriverManager.FIREFOX }, { WebDriverManager.PHANTOMJS }, { WebDriverManager.CHROME }
+        });
+    }
+
+    private final String browser;
+
+    public SeleneseRunnerBuilderTest(String browser) {
+        super();
+        this.browser = browser;
+    }
 
     private static boolean noDisplay = false;
 
@@ -40,7 +61,7 @@ public class SeleneseRunnerBuilderTest {
 
         String file = TestUtils.getScriptFile(this.getClass(), "Simple");
         p.getBuildersList().add(
-            new SeleneseRunnerBuilder(file, WebDriverManager.PHANTOMJS, true, true, "./screenshot", "", "junitresult", "", ""));
+            new SeleneseRunnerBuilder(file, browser, true, true, "./screenshot", "", "junitresult", "", ""));
 
         assertThat(new File(file).exists(), is(true));
         try {
@@ -74,7 +95,7 @@ public class SeleneseRunnerBuilderTest {
 
         p.getBuildersList()
             .add(
-                new SeleneseRunnerBuilder(target.getName(), WebDriverManager.PHANTOMJS, true, true, "./screenshot", "", "junitresult",
+                new SeleneseRunnerBuilder(target.getName(), browser, true, true, "./screenshot", "", "junitresult",
                     "", ""));
 
         try {
