@@ -19,4 +19,4 @@ before_script:
 install: /bin/true
 script:
   - set -o pipefail
-  - mvn clean package -U -e -DskipTests=false | perl -ne "if ( /\\s*Download/ ) { print '.' } else { print }"
+  - mvn clean package -U -e -DskipTests=false | perl -pe "$_='.' if ( /\\s*Download/ )"
