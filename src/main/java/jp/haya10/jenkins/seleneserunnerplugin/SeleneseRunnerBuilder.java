@@ -191,8 +191,13 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         this.baseUrl = baseUrl;
         this.junitresult = junitresult;
         this.size = size;
-        this.width = parseSize(size).getLeft();
-        this.height = parseSize(size).getRight();
+        try {
+            this.width = parseSize(size).getLeft();
+            this.height = parseSize(size).getRight();
+        } catch (InvalidAttributesException e) {
+            this.width = 0;
+            this.height = 0;
+        }
         this.capabilities = capabilities;
     }
 
@@ -354,6 +359,15 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
                 return FormValidation.ok();
             } else {
                 return FormValidation.error("This url is not valid.");
+            }
+        }
+
+        public FormValidation doCheckSize(@QueryParameter String value) {
+            try {
+                SeleneseRunnerBuilder.parseSize(value);
+                return FormValidation.ok();
+            } catch (InvalidAttributesException e) {
+                return FormValidation.error(e.getExplanation());
             }
         }
 

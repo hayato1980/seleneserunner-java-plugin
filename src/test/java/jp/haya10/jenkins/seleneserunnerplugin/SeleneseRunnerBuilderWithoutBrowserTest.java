@@ -65,4 +65,16 @@ public class SeleneseRunnerBuilderWithoutBrowserTest {
         size = SeleneseRunnerBuilder.parseSize("axa");
     }
 
+    @Test
+    public void testSizeFormat() {
+        SeleneseRunnerBuilder.DescriptorImpl d = new SeleneseRunnerBuilder.DescriptorImpl();
+        assertThat(d.doCheckSize("1024x768").kind, is(FormValidation.Kind.OK));
+        assertThat(d.doCheckSize("1024x").kind, is(FormValidation.Kind.ERROR));
+        assertThat(d.doCheckSize("x768").kind, is(FormValidation.Kind.ERROR));
+        assertThat(d.doCheckSize("x").kind, is(FormValidation.Kind.ERROR));
+        assertThat(d.doCheckSize("axa").kind, is(FormValidation.Kind.ERROR));
+        assertThat(d.doCheckSize("").kind, is(FormValidation.Kind.ERROR));
+    }
+
+    
 }
