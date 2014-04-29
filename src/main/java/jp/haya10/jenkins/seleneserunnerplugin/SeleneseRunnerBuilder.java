@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.naming.directory.InvalidAttributesException;
+
 import jp.vmi.selenium.selenese.Runner;
 import jp.vmi.selenium.webdriver.DriverOptions;
 import jp.vmi.selenium.webdriver.DriverOptions.DriverOption;
@@ -23,6 +25,7 @@ import jp.vmi.selenium.webdriver.WebDriverManager;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -63,6 +66,10 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
     private final String junitresult;
 
     private final String size;
+
+    private int width;
+
+    private int height;
 
     private final String capabilities;
 
@@ -169,11 +176,13 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
      * @param junitresult
      * @param size
      * @param capabilities
+     * @throws InvalidAttributesException 
      */
     @DataBoundConstructor
     public SeleneseRunnerBuilder(final String seleneseFile, final String browser, final boolean screenshotAll,
         final boolean screenshotOnFail,
-        final String screenshotDir, final String baseUrl, final String junitresult, final String size, final String capabilities) {
+        final String screenshotDir, final String baseUrl, final String junitresult, final String size, final String capabilities)
+        throws InvalidAttributesException {
         this.seleneseFile = seleneseFile;
         this.browser = browser;
         this.screenshotAll = screenshotAll;
@@ -182,6 +191,8 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         this.baseUrl = baseUrl;
         this.junitresult = junitresult;
         this.size = size;
+        this.width = parseSize(size).getLeft();
+        this.height = parseSize(size).getRight();
         this.capabilities = capabilities;
     }
 
@@ -249,15 +260,8 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             }
 
             //size
-            int height = 0;
-            int width = 0;
-            if ("XGA".equals(getSize())) {
-                width = 1024;
-                height = 768;
-            } else if ("iPhone3GS".equals(getSize())) {
-                width = 320;
-                height = 480;
-            }
+            int height = parseSize(size).getRight();
+            int width = parseSize(size).getLeft();
 
             //capabilities
             String[] capabilities = null;
@@ -278,6 +282,34 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         } finally {
             listener.getLogger().println("selenese finished.");
         }
+    }
+
+    int getHeight() {
+        return height;
+    }
+
+    int getWidth() {
+        return width;
+    }
+
+    public static Pair<Integer, Integer> parseSize(String string) throws InvalidAttributesException {
+        String[] size = StringUtils.split(string, "x");
+
+        if (size.length != 2) {
+            throw new InvalidAttributesException("parseSize must be formatted like '1024x768', But '" + string + "' ");
+        }
+
+        Integer width;
+        Integer height;
+
+        try {
+            width = Integer.parseInt(size[0]);
+            height = Integer.parseInt(size[1]);
+        } catch (NumberFormatException e) {
+            throw new InvalidAttributesException("parseSize must be formatted like '1024x768', But '" + string + "' ");
+        }
+
+        return Pair.of(width, height);
     }
 
     // Overridden for better type safety.
