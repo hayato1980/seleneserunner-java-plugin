@@ -301,7 +301,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
         String[] size = StringUtils.split(string, "x");
 
         if (size.length != 2) {
-            throw new InvalidAttributesException("parseSize must be formatted like '1024x768', But '" + string + "' ");
+            throw new InvalidAttributesException("must be formatted like '1024x768', But '" + string + "' ");
         }
 
         Integer width;
@@ -311,7 +311,7 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             width = Integer.parseInt(size[0]);
             height = Integer.parseInt(size[1]);
         } catch (NumberFormatException e) {
-            throw new InvalidAttributesException("parseSize must be formatted like '1024x768', But '" + string + "' ");
+            throw new InvalidAttributesException("must be formatted like '1024x768', But '" + string + "' ");
         }
 
         return Pair.of(width, height);
@@ -393,5 +393,6 @@ public class SeleneseRunnerBuilder extends Builder implements Serializable {
             save();
             return super.configure(req, formData);
         }
+
     }
 }
